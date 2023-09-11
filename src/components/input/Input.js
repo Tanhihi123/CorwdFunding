@@ -22,14 +22,14 @@ const Input = ({
       <input
         id={name}
         type={type}
-        className={`w-full px-6 py-4 text-sm font-medium border rounded-xl text-text1  ${
+        className={`w-full px-6 py-4 text-sm font-medium border rounded-xl text-text1 bg-transparent dark:text-white ${
           error.length > 0
-            ? "border-error placeholder:text-error"
-            : "border-strock placeholder:text-text4"
+            ? "border-error placeholder:text-error text-error"
+            : "border-strock dark:border-darkStroke placeholder:text-text4 dark:placeholder:text-text2"
         }
         ${children && "pr-16"}
         `}
-        placeholder={error}
+        placeholder={error.length <=0 ? placeholder : error}
         {...rest}
         {...field}
       />
@@ -49,5 +49,5 @@ Input.propTypes = {
   control: PropTypes.any.isRequired,
 };
 export default withErrorBoundary(Input,{
-  FallbackComponent : <ErrorComponent></ErrorComponent>,
+  FallbackComponent : ErrorComponent,
 });

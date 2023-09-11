@@ -1,11 +1,18 @@
 import React from "react";
 
-const Checkbox = ({ checked = false, onClick = () => {}, name = "",children }) => {
+const Checkbox = ({
+  checked = false,
+  onClick = () => {},
+  name = "",
+  children,
+}) => {
   return (
     <div className="flex items-start gap-x-5 select-none">
       <div
         className={`inline-flex items-center justify-center text-white rounded border cursor-pointer ${
-          checked ? "bg-primary border-primary" : "border-strock"
+          checked
+            ? "bg-primary border-primary"
+            : "border-strock dark:border-text3"
         }`}
         onClick={onClick}
       >
@@ -15,7 +22,7 @@ const Checkbox = ({ checked = false, onClick = () => {}, name = "",children }) =
           onChange={() => {}}
           name={name}
         />
-        <span>
+        <span className={`${checked ? "" : "opacity-0 invisible"}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -32,7 +39,11 @@ const Checkbox = ({ checked = false, onClick = () => {}, name = "",children }) =
           </svg>
         </span>
       </div>
-      {children && <label onClick={onClick} className="cursor-pointer">{children}</label>}
+      {children && (
+        <label onClick={onClick} className="cursor-pointer">
+          {children}
+        </label>
+      )}
     </div>
   );
 };

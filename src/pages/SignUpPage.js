@@ -11,6 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { IconEyeToggle } from "components/icons";
 import useToggleValue from "hooks/useToggleValue";
+import ButtonGoogle from "components/button/ButtonGoogle";
 
 const schema = yup.object({
   name: yup.string().required("Please enter your fullname"),
@@ -34,6 +35,7 @@ const SignUpPage = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    mode : "onSubmit",
   });
   const { value: acceptTerm, handleToggleValue: handleTerm } = useToggleValue();
   const { value: showPassword, handleToggleValue: handleTogglePassword } =
@@ -43,17 +45,14 @@ const SignUpPage = () => {
   };
   return (
     <LayoutAuthentication heading="Sign Up">
-      <p className="mb-6 text-xs font-normal text-center font-me-smdium lg:text-sm text-text3 lg:mb-8">
+      <p className="mb-6 text-xs font-normal text-center font-me-smdium lg:text-sm text-text3 lg:mb-8 dark:text-white">
         Already have an account?{" "}
         <Link to="/sign-in" className="font-medium underline text-primary">
           Sign in
         </Link>
       </p>
-      <button className="flex items-center justify-center w-full py-4 mb-5 text-base font-semibold border gap-x-3 border-strock rounded-xl text-text2">
-        <img src="./icon-google.png" alt="icon" />
-        <span>Sign up with Google</span>
-      </button>
-      <p className="mb-4 text-xs font-normal text-center lg:text-sm lg:mb-8 text-text2">
+      <ButtonGoogle text="Sign up with google"></ButtonGoogle>
+      <p className="mb-4 text-xs font-normal text-center lg:text-sm lg:mb-8 text-text2 dark:text-white">
         Or sign up with email
       </p>
       <form onSubmit={handleSubmit(handleSignUp)}>
@@ -93,7 +92,7 @@ const SignUpPage = () => {
         </FormGroup>
         <div className="flex items-start gap-x-5 mb-6 lg:mb-5">
           <Checkbox name="term" checked={acceptTerm} onClick={handleTerm}>
-            <p className="lg:text-sm text-xs text-text2 flex-1">
+            <p className="lg:text-sm text-xs text-text2 flex-1 dark:text-text3">
               I agree to the{" "}
               <span className="text-secondary underline">Terms of Use</span> and
               have read and understand the
