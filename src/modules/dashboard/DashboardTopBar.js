@@ -3,7 +3,6 @@ import DashboardSearch from "./DashboardSearch";
 import { Button } from "components/button";
 import DashboardFund from "./DashboardFund";
 import { Link } from "react-router-dom";
-
 const DashboardTopBar = () => {
   return (
     <div className="flex items-center justify-between mb-8">
