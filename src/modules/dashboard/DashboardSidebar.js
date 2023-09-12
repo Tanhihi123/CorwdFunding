@@ -10,6 +10,8 @@ import {
 
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { withErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "components/common/ErrorComponent";
 
 const sidebarLinks = [
   {
@@ -40,7 +42,7 @@ const sidebarLinks = [
   {
     icon: <IconLogout></IconLogout>,
     title: "Logout",
-    url: "/#",
+    url: "/logout",
     onClick: () => {},
   },
   {
@@ -51,13 +53,18 @@ const sidebarLinks = [
   },
 ];
 const DashboardSidebar = () => {
+  const navLinkClass =
+    "flex items-center gap-x-5 md:w-12 md:h-12 md:justify-center md:rounded-lg md:mb-8 last:mt-auto last:bg-white last:shadow-sdprimary";
   return (
     <div className="w-full md:w-[76px] rounded-3xl bg-white shadow-[10px_10px_20px_rgba(218,_213,_213,_0.15)] px-[14px] py-10 flex flex-col flex-shrink-0">
       {sidebarLinks.map((link) => (
         <NavLink
           to={link.url}
           key={link.title}
-          className={`flex items-center gap-x-5 md:w-12 md:h-12 md:justify-center md:rounded-lg md:mb-8 text-icon-color last:mt-auto last:bg-white last:shadow-sdprimary`
+          className={({ isActive }) =>
+            isActive
+              ? `${navLinkClass} text-primary bg-primary bg-opacity-20`
+              : `${navLinkClass} text-icon-color`
           }
         >
           <span>{link.icon}</span>
@@ -68,4 +75,6 @@ const DashboardSidebar = () => {
   );
 };
 
-export default DashboardSidebar;
+export default withErrorBoundary(DashboardSidebar, {
+  FallbackComponent: ErrorComponent,
+});

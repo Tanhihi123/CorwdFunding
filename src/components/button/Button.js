@@ -1,5 +1,6 @@
 import React from "react";
 import { PropTypes } from "prop-types";
+import { Link } from "react-router-dom";
 const Button = ({
   type,
   children,
@@ -13,14 +14,36 @@ const Button = ({
     children
   );
   // !! là convert boolean
+  let defaultBtnClassName =
+    "py-3 text-base font-semibold rounded-xl flex justify-center items-center min-h-[56px]";
+  switch (rest.kind) {
+    case "primary":
+      defaultBtnClassName = defaultBtnClassName + " bg-primary text-white";
+      break;
+    case "secondary":
+      defaultBtnClassName = defaultBtnClassName + " bg-secondary text-white";
+      break;
+    case "ghost":
+      defaultBtnClassName = defaultBtnClassName + " bg-secondary bg-opacity-10 text-secondary";
+      break;
+    default:
+      break;
+  }
+  if (rest.href)
+    return (
+      <Link to={rest.href} className={`${defaultBtnClassName} ${className}`}>
+        {child}
+      </Link>
+    );
   return (
     <button
-      className={`py-3 text-base font-semibold rounded-xl flex justify-center items-center min-h-[56px] ${!!isLoading ? "opacity-50 pointer-events-none" : ""} text-white ${className}`}
+      className={`${defaultBtnClassName} ${
+        !!isLoading ? "opacity-50 pointer-events-none" : ""
+      }  ${className}`}
       type={type}
       {...rest}
     >
       {child}
-      
     </button>
   );
 };
