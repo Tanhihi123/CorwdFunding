@@ -8,7 +8,7 @@ const DashboardTopBar = () => {
     <div className="flex items-center justify-between mb-8">
       <div className="flex items-center gap-x-10 flex-1">
         <Link to="/" className="inline-block">
-          <img src="./Logo.png" alt="logo" />
+          <img src="/Logo.png" alt="logo" />
         </Link>
         <div className="max-w-[458px] w-full">
           <DashboardSearch></DashboardSearch>

@@ -32,6 +32,16 @@
     @apply text-sm not-italic text-text4;
   }
 }
-.gradient-banner {
-  
+.shadow-1 {
+  box-shadow: -4px 4px 8px rgba(#e2e2e2, 0.2), 4px 4px 8px rgba(#e2e2e2, 0.2);
+}
+.ReactModal__Body--open {
+  overflow: hidden;
+}
+.scroll-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
 }

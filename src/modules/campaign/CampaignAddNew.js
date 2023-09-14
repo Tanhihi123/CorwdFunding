@@ -3,7 +3,7 @@ import FormRow from "components/common/FormRow";
 import { Dropdown } from "components/dropdown";
 import { Input, Textarea } from "components/input";
 import { Label } from "components/label";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill, { Quill } from "react-quill";
@@ -11,11 +11,13 @@ import ImageUploader from "quill-image-uploader";
 import axios from "axios";
 import CampOffer from "./parts/CampOffer";
 import { Button } from "components/button";
+import useOnChange from "hooks/useOnChange";
 Quill.register("modules/ImageUploader", ImageUploader);
 
 const CampaignAddNew = () => {
-  const { handleSubmit, control } = useForm();
+  const { handleSubmit, control, setValue } = useForm();
   const [content, setContent] = useState("");
+  const [countries, setCountries] = useState([]);
   const modules = useMemo(
     () => ({
       toolbar: [
@@ -44,9 +46,26 @@ const CampaignAddNew = () => {
     }),
     []
   );
+  const handleSelectDropDownOption =(name,value) => {
+    setValue(name,value)
+  }
   const handleNewCampaign = (values) => {
-    console.log(values);
+    // console.log(values);
   };
+  const { value, handleOnChange } = useOnChange();
+  useEffect(() => {
+    async function fetchContry() {
+      if(!value) return;
+      const response = await axios.get(
+        `https://restcountries.com/v3.1/name/${value}`
+      );
+      console.log(response);
+      setCountries(response.data);
+      console.log(countries);
+    }
+    fetchContry();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
   return (
     <div className="bg-white rounded-xl py-10 px-[66px]">
       <div className="text-center">
@@ -69,8 +88,9 @@ const CampaignAddNew = () => {
             <Dropdown>
               <Dropdown.Select placeholder="Select the category"></Dropdown.Select>
               <Dropdown.List>
-                <Dropdown.Option>Architecture</Dropdown.Option>
-                <Dropdown.Option>Crypto</Dropdown.Option>
+                <Dropdown.Option onClick={() => handleSelectDropDownOption("category","Crypto")}>
+                  Crypto
+                </Dropdown.Option>
               </Dropdown.List>
             </Dropdown>
           </FormGroup>
@@ -189,8 +209,24 @@ const CampaignAddNew = () => {
             <Dropdown>
               <Dropdown.Select placeholder="Select a country"></Dropdown.Select>
               <Dropdown.List>
-                <Dropdown.Option>Architecture</Dropdown.Option>
-                <Dropdown.Option>Crypto</Dropdown.Option>
+                <Dropdown.Search
+                  placeholder="Search Country"
+                  onChange={handleOnChange}
+                ></Dropdown.Search>
+                {countries.length > 0 &&
+                  countries.map((country) => (
+                    <Dropdown.Option
+                      key={country?.name?.common}
+                      onClick={() =>
+                        handleSelectDropDownOption(
+                          "country",
+                          country?.name?.common
+                        )
+                      }
+                    >
+                      {country?.name?.common}
+                    </Dropdown.Option>
+                  ))}
               </Dropdown.List>
             </Dropdown>
           </FormGroup>
@@ -214,7 +250,9 @@ const CampaignAddNew = () => {
           </FormGroup>
         </FormRow>
         <div className="text-center">
-            <Button className="mx-auto px-10" kind="primary">Submit new campaign </Button>
+          <Button className="mx-auto px-10" kind="primary">
+            Submit new campaign{" "}
+          </Button>
         </div>
       </form>
     </div>
