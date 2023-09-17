@@ -25,7 +25,7 @@ const DashboardTopBar = () => {
           Start a campaign
         </Button>
         <img
-          src="./Logo.png"
+          src="/Logo.png"
           alt="avatar"
           className="rounded-full object-cover"
         />

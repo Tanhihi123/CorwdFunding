@@ -45,3 +45,11 @@
 .scroll-hidden::-webkit-scrollbar {
   display: none;
 }
+// custom date picker
+
+.react-datepicker-wrapper .react-datepicker__input-container {
+  @apply p-4 border border-slate-100 rounded-xl text-center
+}
+.react-datepicker-wrapper .react-datepicker__input-container input{
+  @apply cursor-pointer
+}

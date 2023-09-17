@@ -12,12 +12,21 @@ import axios from "axios";
 import CampOffer from "./parts/CampOffer";
 import { Button } from "components/button";
 import useOnChange from "hooks/useOnChange";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { apiURL } from "config/Config";
+import { toast } from "react-toastify";
+import ImageUpload from "components/image/ImageUpload";
 Quill.register("modules/ImageUploader", ImageUploader);
 
+const categoriesData = ["crypto", "education"];
+
 const CampaignAddNew = () => {
-  const { handleSubmit, control, setValue } = useForm();
+  const { handleSubmit, control, setValue, reset, watch } = useForm();
   const [content, setContent] = useState("");
   const [countries, setCountries] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const modules = useMemo(
     () => ({
       toolbar: [
@@ -30,32 +39,52 @@ const CampaignAddNew = () => {
       ],
       ImageUploader: {
         upload: async (file) => {
-          //   const bodyFormData = new FormData();
-          //   bodyFormData.append("image", file);
-          //   const response = await axios({
-          //     method: "post",
-          //     url: "https://api.imgbb.com/1/upload?key=1354c230dd40a7043dbe4307c3df1bc3",
-          //     data: bodyFormData,
-          //     headers: {
-          //       "content-Type": "multipart/form-data",
-          //     },
-          //   });
-          //   return response.data.data.url;
+          const bodyFormData = new FormData();
+          bodyFormData.append("image", file);
+          const response = await axios({
+            method: "post",
+            url: "https://api.imgbb.com/1/upload?key=1354c230dd40a7043dbe4307c3df1bc3",
+            data: bodyFormData,
+            headers: {
+              "content-Type": "multipart/form-data",
+            },
+          });
+          return response.data.data.url;
         },
       },
     }),
     []
   );
-  const handleSelectDropDownOption =(name,value) => {
-    setValue(name,value)
-  }
-  const handleNewCampaign = (values) => {
-    // console.log(values);
+  const getDropDownLabel = (name) => {
+    const value = watch(name);
+    return value;
+  };
+  const resetValue = () => {
+    setStartDate("");
+    setEndDate("");
+    reset({});
+  };
+  const handleSelectDropDownOption = (name, value) => {
+    setValue(name, value);
+  };
+  const handleNewCampaign = async (values) => {
+    try {
+      axios.post(`${apiURL}/campaigns`, {
+        ...values,
+        content,
+        startDate,
+        endDate,
+      });
+      toast.success("Create campaign successfully !!");
+      resetValue();
+    } catch (error) {
+      toast.error("Can't create new campaign");
+    }
   };
   const { value, handleOnChange } = useOnChange();
   useEffect(() => {
     async function fetchContry() {
-      if(!value) return;
+      if (!value) return;
       const response = await axios.get(
         `https://restcountries.com/v3.1/name/${value}`
       );
@@ -86,11 +115,20 @@ const CampaignAddNew = () => {
           <FormGroup>
             <Label>Select a category *</Label>
             <Dropdown>
-              <Dropdown.Select placeholder="Select the category"></Dropdown.Select>
+              <Dropdown.Select
+                placeholder={getDropDownLabel("category") || "Select category"}
+              ></Dropdown.Select>
               <Dropdown.List>
-                <Dropdown.Option onClick={() => handleSelectDropDownOption("category","Crypto")}>
-                  Crypto
-                </Dropdown.Option>
+                {categoriesData.map((category) => (
+                  <Dropdown.Option
+                    key={category}
+                    onClick={() =>
+                      handleSelectDropDownOption("category", category)
+                    }
+                  >
+                    <span className="capitalize">{category}</span>
+                  </Dropdown.Option>
+                ))}
               </Dropdown.List>
             </Dropdown>
           </FormGroup>
@@ -98,9 +136,9 @@ const CampaignAddNew = () => {
         <FormGroup>
           <Label>Short Description *</Label>
           <Textarea
+            control={control}
             name="short_description"
             placeholder="Write a short description...."
-            control={control}
           ></Textarea>
         </FormGroup>
         <FormGroup>
@@ -153,6 +191,15 @@ const CampaignAddNew = () => {
               </div>
             </div>
           </CampOffer>
+        </FormGroup>
+        <FormGroup>
+          <Label>Featured Image</Label>
+          <div className="flex items-center justify-center">
+            <ImageUpload
+              onChange={setValue}
+              name="featured_image"
+            ></ImageUpload>
+          </div>
         </FormGroup>
         <FormRow>
           <FormGroup>
@@ -207,7 +254,9 @@ const CampaignAddNew = () => {
           <FormGroup>
             <Label>Counrty</Label>
             <Dropdown>
-              <Dropdown.Select placeholder="Select a country"></Dropdown.Select>
+              <Dropdown.Select
+                placeholder={getDropDownLabel("country") || "Select Country"}
+              ></Dropdown.Select>
               <Dropdown.List>
                 <Dropdown.Search
                   placeholder="Search Country"
@@ -234,23 +283,33 @@ const CampaignAddNew = () => {
         <FormRow>
           <FormGroup>
             <Label>Start Date</Label>
-            <Input
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+            />
+            {/* <Input
               control={control}
               name="start_date"
               placeholder="Start Date"
-            ></Input>
+              type="date"
+            ></Input> */}
           </FormGroup>
           <FormGroup>
             <Label>End Date</Label>
-            <Input
+            {/* <Input
               control={control}
               name="end_date"
               placeholder="End Date"
-            ></Input>
+              type="date"
+            ></Input> */}
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+            />
           </FormGroup>
         </FormRow>
         <div className="text-center">
-          <Button className="mx-auto px-10" kind="primary">
+          <Button className="mx-auto px-10" kind="primary" type="submit">
             Submit new campaign{" "}
           </Button>
         </div>

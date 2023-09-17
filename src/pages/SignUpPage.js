@@ -12,6 +12,8 @@ import * as yup from "yup";
 import { IconEyeToggle } from "components/icons";
 import useToggleValue from "hooks/useToggleValue";
 import ButtonGoogle from "components/button/ButtonGoogle";
+import { useDispatch } from "react-redux";
+import { authRegister } from "store/auth/auth-slice";
 
 const schema = yup.object({
   name: yup.string().required("Please enter your fullname"),
@@ -32,6 +34,7 @@ const SignUpPage = () => {
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -40,15 +43,22 @@ const SignUpPage = () => {
   const { value: acceptTerm, handleToggleValue: handleTerm } = useToggleValue();
   const { value: showPassword, handleToggleValue: handleTogglePassword } =
     useToggleValue();
+    const dispatch = useDispatch();
   const handleSignUp = (values) => {
-    console.log(values);
+    // console.log(values);
+    try {
+      dispatch(authRegister(values));
+      reset({});
+    } catch (error) {
+      
+    }
   };
   return (
     <LayoutAuthentication heading="Sign Up">
       <p className="mb-6 text-xs font-normal text-center font-me-smdium lg:text-sm text-text3 lg:mb-8 dark:text-white">
         Already have an account?{" "}
-        <Link to="/sign-in" className="font-medium underline text-primary">
-          Sign in
+        <Link to="/login" className="font-medium underline text-primary">
+          Login
         </Link>
       </p>
       <ButtonGoogle text="Sign up with google"></ButtonGoogle>
